@@ -7,15 +7,14 @@ import ru.saiev.repository.CheckRepository;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class CartService {
 
     private final HashMap<String, CheckLines> basketList;
 
-    private CheckRepository checkRepository = new CheckRepository();
-    private CartRepository cartRepository = new CartRepository();
+    private final CheckRepository checkRepository = new CheckRepository();
+    private final CartRepository cartRepository = new CartRepository();
 
 
     public CartService() {

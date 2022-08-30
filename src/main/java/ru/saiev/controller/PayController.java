@@ -2,26 +2,12 @@ package ru.saiev.controller;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.VBox;
-
 import java.math.BigDecimal;
-import java.net.URL;
-import java.util.ResourceBundle;
 
 public class PayController {
 
     protected MainController mainController;
-
-    @FXML
-    VBox globParent;
-
-    @FXML
-    private ResourceBundle resources;
-
-    @FXML
-    private URL location;
 
     @FXML
     private Button pay_button_cancel;
@@ -31,9 +17,6 @@ public class PayController {
 
     @FXML
     private TextField pay_inputSum_field;
-
-    @FXML
-    private Label pay_totalSum_text;
 
     @FXML
     void initialize() {
@@ -59,9 +42,5 @@ public class PayController {
 
     private String totalSum() {
         return String.valueOf(mainController.getCartService().getTotalBasketSum().doubleValue());
-    }
-
-    public void setController(MainController mainController) {
-        this.mainController = mainController;
     }
 }

@@ -19,20 +19,12 @@ import ru.saiev.service.CartService;
 import ru.saiev.service.GoodsService;
 
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.net.URL;
 import java.util.*;
 
-public class MainController extends AbstractController {
+public class MainController {
 
-    private GoodsService goodsService = new GoodsService();
-    private CartService cartService = new CartService();
-
-    @FXML
-    private ResourceBundle resources;
-
-    @FXML
-    private URL location;
+    private final GoodsService goodsService = new GoodsService();
+    private final CartService cartService = new CartService();
 
     @FXML
     private Button main_basket_button_clear;
@@ -164,10 +156,6 @@ public class MainController extends AbstractController {
         main_table_basket.setItems(basketData);
         main_basket_field_totalSum.setText(String.format("%1$,.2f", cartService.getTotalBasketSum()));
         main_table_basket.refresh();
-    }
-
-    public GoodsService getGoodsService() {
-        return this.goodsService;
     }
 
     public CartService getCartService() {

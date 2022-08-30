@@ -1,8 +1,6 @@
 package ru.saiev.repository;
 
-import ru.saiev.config.DBConnectionConfig;
 import ru.saiev.model.Product;
-import ru.saiev.repository.AbstractRepository;
 
 import java.io.IOException;
 import java.sql.PreparedStatement;
@@ -14,7 +12,7 @@ import java.util.List;
 public class GoodsRepository extends AbstractRepository {
 
     public boolean add(Product product) {
-        String sql = "INSERT INTO goods (ean, name,price) " +
+        String sql = "INSERT INTO myshema.goods (ean, name,price) " +
                 "VALUES (?, ?, ?)";
         int result = 0;
         try (PreparedStatement prSt = dataBaseConnection.getDbConnection().prepareStatement(sql)) {
@@ -22,16 +20,14 @@ public class GoodsRepository extends AbstractRepository {
             prSt.setString(2, product.getName());
             prSt.setBigDecimal(3, product.getPrice());
             result = prSt.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (SQLException | IOException e) {
             e.printStackTrace();
         }
         return result > 0;
     }
 
     public List<Product> getAll() {
-        String sql = "SELECT * FROM goods";
+        String sql = "SELECT * FROM myshema.goods";
         List<Product> productList = new ArrayList<>();
         try (PreparedStatement prSt = dataBaseConnection.getDbConnection().prepareStatement(sql)) {
             ResultSet set = prSt.executeQuery();
@@ -43,42 +39,10 @@ public class GoodsRepository extends AbstractRepository {
                         set.getBigDecimal("price"));
                 productList.add(product);
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (SQLException | IOException e) {
             e.printStackTrace();
         }
         return productList;
     }
 
-    public boolean update(Product product) {
-        String sql = "UPDATE goods SET ean = ?, name = ?, price = ?" +
-                "WHERE id = ?";
-        int result = 0;
-        try (PreparedStatement prSt = dataBaseConnection.getDbConnection().prepareStatement(sql)) {
-            prSt.setLong(1, product.getEan());
-            prSt.setString(2, product.getName());
-            prSt.setBigDecimal(3, product.getPrice());
-            prSt.setLong(4, product.getId());
-            result = prSt.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return result > 0;
-    }
-
-    public boolean delete(Long id) {
-        String sql = "DELETE FROM goods WHERE id = ?";
-        try (PreparedStatement prSt = dataBaseConnection.getDbConnection().prepareStatement(sql)) {
-            prSt.setLong(1, id);
-            return prSt.execute();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
 }

@@ -8,10 +8,10 @@ import java.util.stream.Collectors;
 
 public class GoodsService {
 
-    private List<Product> productsList;
-    private final GoodsRepository goodsRepository = new GoodsRepository();
+    private final List<Product> productsList;
 
     public GoodsService() {
+        GoodsRepository goodsRepository = new GoodsRepository();
         this.productsList = goodsRepository.getAll();
     }
 

@@ -12,7 +12,7 @@ public class CartRepository extends AbstractRepository {
     public boolean saveAll(Collection<CheckLines> listCheckLines, long check_id) {
         int result = 0;
         for (CheckLines checkLine : listCheckLines) {
-            String sql = "INSERT INTO checklines (check_id, goods_ean, count, total) " +
+            String sql = "INSERT INTO my.shema.checklines (check_id, goods_ean, count, total) " +
                     "VALUES (?, ?, ?, ?)";
             try (PreparedStatement prSt = dataBaseConnection.getDbConnection().prepareStatement(sql)) {
                 prSt.setLong(1, check_id);
@@ -20,9 +20,7 @@ public class CartRepository extends AbstractRepository {
                 prSt.setInt(3, checkLine.getCount());
                 prSt.setBigDecimal(4, checkLine.getTotal());
                 int st = prSt.executeUpdate();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
+            } catch (SQLException | IOException e) {
                 e.printStackTrace();
             }
         }
