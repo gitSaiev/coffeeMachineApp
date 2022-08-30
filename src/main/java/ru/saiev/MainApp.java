@@ -12,7 +12,7 @@ public class MainApp extends javafx.application.Application {
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(MainApp.class.getResource("/application/main.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 800, 600);
-        stage.setTitle("Купить кофе");
+        stage.setTitle("Buy coffee");
         stage.setScene(scene);
         stage.setResizable(false);
         stage.show();

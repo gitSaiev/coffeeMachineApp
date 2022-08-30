@@ -11,7 +11,7 @@ public class CheckRepository extends AbstractRepository {
 
     public long newCheck(BigDecimal totalSum) {
         Long result = null;
-        String sql = "INSERT INTO my.shema.checks (total)" +
+        String sql = "INSERT INTO myshema.checks (total)" +
                 "VALUES (?) RETURNING check_id";
         try (PreparedStatement prSt = dataBaseConnection.getDbConnection().prepareStatement(sql)) {
             prSt.setFloat(1, totalSum.floatValue());

@@ -128,7 +128,7 @@ public class MainController {
                 }
                 PayController lc = fxmlLoader.getController();
                 lc.mainController = this;
-                newWindow.setTitle("Оплата");
+                newWindow.setTitle("Payment");
                 newWindow.setScene(scene);
                 newWindow.setResizable(false);
                 newWindow.initModality(Modality.WINDOW_MODAL);

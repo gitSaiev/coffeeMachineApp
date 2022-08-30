@@ -23,7 +23,7 @@
                 <Font size="14.0" />
             </font>
         </Button>
-        <Button fx:id="pay_button_cancel" layoutX="26.0" layoutY="261.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="158.0" style="-fx-background-color: #d92f1f; -fx-border-color: silver; -fx-cursor: hand;" text="Отменить" />
+        <Button fx:id="pay_button_cancel" layoutX="26.0" layoutY="261.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="158.0" style="-fx-background-color: #fcfcfc; -fx-border-color: silver; -fx-cursor: hand;" text="Отменить" />
         <TextField fx:id="pay_inputSum_field" layoutX="26.0" layoutY="161.0" prefHeight="25.0" prefWidth="158.0" />
         <Label layoutX="40.0" layoutY="124.0" prefHeight="27.0" prefWidth="130.0" text="Введите сумму:" textAlignment="CENTER" textFill="WHITE">
             <font>
