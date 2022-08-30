@@ -16,10 +16,20 @@ dependencies {
     implementation group: 'org.postgresql', name: 'postgresql', version: '42.2.5'
 }
 
-application{
-    mainClassName = 'coffee.App'
+application {
+    mainClassName = 'coffee.Application'
 }
 
 test {
     useJUnitPlatform()
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'ru.saiev.MainApp'
+    }
+
+    from {
+        configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
 }
