@@ -1,6 +1,8 @@
-package ru.saiev.repository.config;
+package ru.saiev.repository;
 
+import ru.saiev.config.DBConnectionConfig;
 import ru.saiev.model.Product;
+import ru.saiev.repository.AbstractRepository;
 
 import java.io.IOException;
 import java.sql.PreparedStatement;
@@ -9,29 +11,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GoodsRepository {
-    private final DBConnectionConfig dataBaseConnection = new DBConnectionConfig();
-
-    public Product get(String stId) {
-        String sql = "SELECT * FROM goods WHERE id = ?";
-        try (PreparedStatement prSt = dataBaseConnection.getDbConnection().prepareStatement(sql)) {
-            Long index = Long.parseLong(stId);
-            prSt.setLong(1, index);
-            ResultSet set = prSt.executeQuery();
-            if (set.next()) {
-                return new Product(
-                        set.getLong("id"),
-                        set.getLong("ean"),
-                        set.getString("name"),
-                        set.getBigDecimal("price"));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
+public class GoodsRepository extends AbstractRepository {
 
     public boolean add(Product product) {
         String sql = "INSERT INTO goods (ean, name,price) " +

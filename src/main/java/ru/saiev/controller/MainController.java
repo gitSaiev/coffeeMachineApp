@@ -3,23 +3,28 @@ package ru.saiev.controller;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import ru.saiev.Main;
+import ru.saiev.model.CheckLines;
 import ru.saiev.model.Product;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.util.*;
 
 public class MainController extends AbstractController {
 
-    public static final String PAGE_URL = "/application/main.fxml";
-
     private List<Product> productList;
-    private final HashMap<Product, BasketLine> basketList = new HashMap<>();
+    private final HashMap<String, CheckLines> basketList = new HashMap<>();
 
     @FXML
     private ResourceBundle resources;
@@ -46,7 +51,7 @@ public class MainController extends AbstractController {
     private TextField main_filter_field;
 
     @FXML
-    private TableView<BasketLine> main_table_basket;
+    private TableView<CheckLines> main_table_basket;
 
     @FXML
     private TableColumn<?, ?> main_table_basket_count;
@@ -69,6 +74,8 @@ public class MainController extends AbstractController {
     @FXML
     private TableColumn<?, ?> main_table_products_price;
 
+    @FXML
+    private Button main_basket_button_delete;
 
     @FXML
     void initialize() {
@@ -83,26 +90,61 @@ public class MainController extends AbstractController {
             main_filter_field.setText("");
         });
 
+        main_table_products.getSelectionModel().selectedItemProperty().addListener(
+                (observable, oldValue, newValue) -> {
+                    addProductToBasket(newValue);
+                });
+
         main_table_button_add.setOnAction(event -> {
             Product product = main_table_products.getFocusModel().getFocusedItem();
-            BasketLine basketLine;
-            if (basketList.containsKey(product)) {
-                basketLine = basketList.get(product);
-                basketLine.addIncrease(product);
-            } else {
-                basketLine = new BasketLine(product);
-            }
-            basketList.put(product, basketLine);
-            initBasket(basketList);
-            main_basket_field_totalSum.setText(String.format("%1$,.2f", basketList.values().stream().mapToDouble(bl -> bl.total.doubleValue()).sum()));
-            main_table_basket.refresh();
+            addProductToBasket(product);
+        });
+
+        main_basket_button_clear.setOnAction(event -> {
+            clearBasket();
+        });
+
+        main_basket_button_delete.setOnAction(event -> {
+            CheckLines product = main_table_basket.getFocusModel().getFocusedItem();
+            deletePositionBasket(product);
         });
 
         main_basket_button_pay.setOnAction(event -> {
+            Stage newWindow = new Stage();
+            FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("/application/pay.fxml"));
             Map<String, String> params = new HashMap<>();
-            params.put("totalSum", main_basket_field_totalSum.getText() + " руб");
-            showNextPage(PayController.PAGE_URL, params);
+            params.put("totalSum", String.valueOf(getTotalBasketSum()));
+            fxmlLoader.getNamespace().putAll(params);
+
+            Scene scene = null;
+            try {
+                scene = new Scene(fxmlLoader.load(), 210, 320);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            PayController lc = fxmlLoader.getController();
+            lc.mainController = this;
+            newWindow.setTitle("Pay");
+            newWindow.setScene(scene);
+            newWindow.setResizable(false);
+            newWindow.initModality(Modality.WINDOW_MODAL);
+            newWindow.initOwner(main_basket_button_pay.getScene().getWindow());
+            newWindow.show();
         });
+    }
+
+    private void addProductToBasket(Product product) {
+        CheckLines checkLine;
+        if (basketList.containsKey(product.getName())) {
+            checkLine = basketList.get(product.getName());
+            checkLine.addIncrease(product);
+        } else {
+            checkLine = new CheckLines(product);
+        }
+        basketList.put(product.getName(), checkLine);
+        initBasket(basketList);
+        main_basket_field_totalSum.setText(String.format("%1$,.2f", getTotalBasketSum()));
+        main_table_basket.refresh();
     }
 
     private void initTable(List<Product> productList) {
@@ -114,8 +156,8 @@ public class MainController extends AbstractController {
         main_table_products.setItems(productsData);
     }
 
-    private void initBasket(Map<Product, BasketLine> basketList) {
-        ObservableList<BasketLine> basketData = FXCollections.observableArrayList();
+    private void initBasket(Map<String, CheckLines> basketList) {
+        ObservableList<CheckLines> basketData = FXCollections.observableArrayList();
         basketData.addAll(new ArrayList<>(basketList.values()));
         main_table_basket_name.setCellValueFactory(new PropertyValueFactory<>("name"));
         main_table_basket_count.setCellValueFactory(new PropertyValueFactory<>("count"));
@@ -123,32 +165,26 @@ public class MainController extends AbstractController {
         main_table_basket.setItems(basketData);
     }
 
-    public class BasketLine {
-        private String name;
-        private int count;
-        private BigDecimal total;
+    public void clearBasket() {
+        main_basket_field_totalSum.setText("");
+        basketList.clear();
+        initBasket(basketList);
+        main_table_basket.refresh();
+    }
 
-        private BasketLine(Product product) {
-            this.name = product.getName();
-            this.count = 1;
-            this.total = new BigDecimal(String.valueOf(product.getPrice()));
-        }
+    public void deletePositionBasket(CheckLines checkLines) {
+        basketList.remove(checkLines.getName());
+        initBasket(basketList);
+        main_table_basket.refresh();
+    }
 
-        private void addIncrease(Product product) {
-            this.count++;
-            this.total = this.total.add(product.getPrice());
-        }
+    public BigDecimal getTotalBasketSum() {
+        return this.basketList.values().stream()
+                .map(CheckLines::getTotal)
+                .reduce(BigDecimal::add).orElse(new BigDecimal("0.0"));
+    }
 
-        public String getName() {
-            return name;
-        }
-
-        public int getCount() {
-            return count;
-        }
-
-        public BigDecimal getTotal() {
-            return total;
-        }
+    public void saveBasket() {
+        cartService.newCheck(new ArrayList<>(basketList.values()), getTotalBasketSum());
     }
 }

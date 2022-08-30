@@ -1,4 +1,4 @@
-package ru.saiev.repository.config;
+package ru.saiev.config;
 
 import java.io.FileInputStream;
 import java.io.IOException;

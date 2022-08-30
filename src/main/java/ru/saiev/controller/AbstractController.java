@@ -4,6 +4,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
+import ru.saiev.service.CartService;
 import ru.saiev.service.GoodsService;
 
 import java.io.IOException;
@@ -12,6 +13,7 @@ import java.util.Map;
 public abstract class AbstractController {
 
     protected GoodsService goodsService = new GoodsService();
+    protected CartService cartService = new CartService();
 
     public void showNextPage(Button button, String pageUrl) {
         button.getScene().getWindow().hide();
