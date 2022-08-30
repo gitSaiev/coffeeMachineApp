@@ -12,7 +12,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import ru.saiev.Main;
+import ru.saiev.MainApp;
 import ru.saiev.model.CheckLines;
 import ru.saiev.model.Product;
 
@@ -106,30 +106,34 @@ public class MainController extends AbstractController {
 
         main_basket_button_delete.setOnAction(event -> {
             CheckLines product = main_table_basket.getFocusModel().getFocusedItem();
-            deletePositionBasket(product);
+            if (product != null) {
+                deletePositionBasket(product);
+            }
         });
 
         main_basket_button_pay.setOnAction(event -> {
-            Stage newWindow = new Stage();
-            FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("/application/pay.fxml"));
-            Map<String, String> params = new HashMap<>();
-            params.put("totalSum", String.valueOf(getTotalBasketSum()));
-            fxmlLoader.getNamespace().putAll(params);
+            if (!basketList.isEmpty()) {
+                Stage newWindow = new Stage();
+                FXMLLoader fxmlLoader = new FXMLLoader(MainApp.class.getResource("/application/pay.fxml"));
+                Map<String, String> params = new HashMap<>();
+                params.put("totalSum", String.valueOf(getTotalBasketSum()));
+                fxmlLoader.getNamespace().putAll(params);
 
-            Scene scene = null;
-            try {
-                scene = new Scene(fxmlLoader.load(), 210, 320);
-            } catch (IOException e) {
-                e.printStackTrace();
+                Scene scene = null;
+                try {
+                    scene = new Scene(fxmlLoader.load(), 210, 320);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                PayController lc = fxmlLoader.getController();
+                lc.mainController = this;
+                newWindow.setTitle("Оплата");
+                newWindow.setScene(scene);
+                newWindow.setResizable(false);
+                newWindow.initModality(Modality.WINDOW_MODAL);
+                newWindow.initOwner(main_basket_button_pay.getScene().getWindow());
+                newWindow.show();
             }
-            PayController lc = fxmlLoader.getController();
-            lc.mainController = this;
-            newWindow.setTitle("Pay");
-            newWindow.setScene(scene);
-            newWindow.setResizable(false);
-            newWindow.initModality(Modality.WINDOW_MODAL);
-            newWindow.initOwner(main_basket_button_pay.getScene().getWindow());
-            newWindow.show();
         });
     }
 
