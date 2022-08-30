@@ -12,8 +12,6 @@ import java.util.ResourceBundle;
 
 public class PayController {
 
-    public static final String PAGE_URL = "/application/pay.fxml";
-
     protected MainController mainController;
 
     @FXML
@@ -45,19 +43,25 @@ public class PayController {
             try {
                 bigDecimal = new BigDecimal(inputString);
             } catch (NumberFormatException e) {
-                pay_inputSum_field.setText(pay_totalSum_text.getText());
+                pay_inputSum_field.setText(totalSum());
             }
-
-            if (bigDecimal != null && bigDecimal.compareTo(mainController.getTotalBasketSum()) == 0) {
-                mainController.saveBasket();
-                mainController.clearBasket();
+            if (bigDecimal != null && bigDecimal.compareTo(mainController.getCartService().getTotalBasketSum()) == 0) {
+                mainController.refreshBasket(mainController.getCartService().newCheck());
                 pay_button_confirm.getScene().getWindow().hide();
             } else {
-                pay_inputSum_field.setText(pay_totalSum_text.getText());
+                pay_inputSum_field.setText(totalSum());
             }
         });
         pay_button_cancel.setOnAction(event -> {
             pay_button_cancel.getScene().getWindow().hide();
         });
+    }
+
+    private String totalSum() {
+        return String.valueOf(mainController.getCartService().getTotalBasketSum().doubleValue());
+    }
+
+    public void setController(MainController mainController) {
+        this.mainController = mainController;
     }
 }
