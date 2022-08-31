@@ -75,16 +75,19 @@ public class MainController {
     void initialize() {
         refreshTable(goodsService.getAll());
 
+        // Поиск товара
         main_filter_field.textProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 refreshTable(goodsService.getFilter(newValue));
             }
         });
 
+        // Сброс фильтра поиска товара
         main_filter_button_clear.setOnAction(event -> {
             main_filter_field.setText("");
         });
 
+        // Фокус на выбранный товар
         main_table_products.setOnMousePressed(event -> {
             if (event.isPrimaryButtonDown() && event.getClickCount() == 1) {
                 Product product = main_table_products.getFocusModel().getFocusedItem();
@@ -94,6 +97,7 @@ public class MainController {
             }
         });
 
+        // Добавления выбранного товара
         main_table_button_add.setOnAction(event -> {
             Product product = main_table_products.getFocusModel().getFocusedItem();
             if (product != null) {
@@ -101,10 +105,12 @@ public class MainController {
             }
         });
 
+        // События на очистку корзины
         main_basket_button_clear.setOnAction(event -> {
             refreshBasket(cartService.clearBasket());
         });
 
+        // Удаляем выбранную товар из корзины
         main_basket_button_delete.setOnAction(event -> {
             CheckLines product = main_table_basket.getFocusModel().getFocusedItem();
             if (product != null) {
@@ -112,6 +118,7 @@ public class MainController {
             }
         });
 
+        // События вызова окна для оплаты
         main_basket_button_pay.setOnAction(event -> {
             if (!cartService.basketIsEmpty()) {
                 Stage newWindow = new Stage();
@@ -138,6 +145,7 @@ public class MainController {
         });
     }
 
+    // События на обновления списка товаров
     public void refreshTable(List<Product> productList) {
         ObservableList<Product> productsData = FXCollections.observableArrayList();
         productsData.addAll(productList);
@@ -147,6 +155,7 @@ public class MainController {
         main_table_products.setItems(productsData);
     }
 
+    // События на обновление корзины
     public void refreshBasket(Map<String, CheckLines> basketList) {
         ObservableList<CheckLines> basketData = FXCollections.observableArrayList();
         basketData.addAll(new ArrayList<>(basketList.values()));
