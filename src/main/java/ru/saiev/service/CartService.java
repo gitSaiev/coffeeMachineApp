@@ -21,6 +21,7 @@ public class CartService {
         this.basketList = new HashMap<>();
     }
 
+    //
     public Map<String, CheckLines> newCheck() {
         if (!this.basketList.isEmpty()) {
             long checkId = checkRepository.newCheck(getTotalBasketSum());
@@ -29,6 +30,7 @@ public class CartService {
         return clearBasket();
     }
 
+    // Добавления товара в корзину. Можно добавить несколько количество
     public Map<String, CheckLines> addProductToBasket(Product product) {
         CheckLines checkLine;
         if (basketList.containsKey(product.getName())) {
@@ -41,17 +43,20 @@ public class CartService {
         return this.basketList;
     }
 
+    // Получение итоговой суммы
     public BigDecimal getTotalBasketSum() {
         return this.basketList.values().stream()
                 .map(CheckLines::getTotal)
                 .reduce(BigDecimal::add).orElse(new BigDecimal("0.0"));
     }
 
+    // Очищения корзины
     public Map<String, CheckLines> clearBasket() {
         this.basketList.clear();
         return this.basketList;
     }
 
+    // Удаление выбранного товара
     public Map<String, CheckLines> deletePositionBasket(CheckLines product) {
         basketList.remove(product.getName());
         return this.basketList;

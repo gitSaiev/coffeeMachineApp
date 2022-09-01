@@ -33,7 +33,7 @@ public class PayController {
                 pay_inputSum_field.setText(totalSum());
             }
             // Проверка пустая ли корзина
-            if (Objects.requireNonNull(bigDecimal).compareTo(mainController.getCartService().getTotalBasketSum()) == 0) {
+            if (bigDecimal != null && bigDecimal.compareTo(mainController.getCartService().getTotalBasketSum())==0) {
                 mainController.refreshBasket(mainController.getCartService().newCheck());
                 pay_button_confirm.getScene().getWindow().hide();
             } else {

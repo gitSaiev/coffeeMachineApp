@@ -15,10 +15,12 @@ public class GoodsService {
         this.productsList = goodsRepository.getAll();
     }
 
+    // Возвращения всех товаров
     public List<Product> getAll() {
         return this.productsList;
     }
 
+    // Фильтр товаров по имени (lower case)
     public List<Product> getFilter(String filter) {
         return productsList.stream().filter(product -> product.getName().toLowerCase().contains(filter.toLowerCase())).collect(Collectors.toList());
     }

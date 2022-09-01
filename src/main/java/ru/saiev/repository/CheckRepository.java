@@ -9,6 +9,7 @@ import java.util.Objects;
 
 public class CheckRepository extends AbstractRepository {
 
+    //
     public long newCheck(BigDecimal totalSum) {
         Long result = null;
         String sql = "INSERT INTO myshema.checks (total)" +
